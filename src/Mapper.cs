@@ -44,14 +44,12 @@ namespace DBus
 
 		private static IEnumerable<Type> GetHierarchy(Type type)
 		{
-			if (IsPublic (type)) {
-				yield return type;
-			}
-
-			foreach (var super in GetHierarchy (type.BaseType)) {
+			while (type != null) {
 				if (IsPublic (type)) {
-					yield return super;
+					yield return type;
 				}
+				yield return type;
+				type = type.BaseType;
 			}
 		}
 

@@ -70,6 +70,8 @@ namespace DBus
 
 			if (null == calls.All) {
 				Type it = Mapper.GetInterfaceType (ObjectType, iface);
+				if (it == null)
+					return null;
 				calls.All = TypeImplementer.GenGetAllCall (it);
 			}
 
@@ -172,8 +174,13 @@ namespace DBus
 		{
 			switch (method_call.Interface) {
 			case "org.freedesktop.DBus.Properties":
-				HandlePropertyCall (method_call);
-				return;
+				try {
+					HandlePropertyCall (method_call);
+					return;
+				} catch (Exception e) {
+					IssueErrorReply (method_call, e);
+					return;
+				}
 			}
 
 			MethodCall mCaller = null;
@@ -226,20 +233,28 @@ namespace DBus
 				replyMsg = method_return.Message;
 				replyMsg.AttachBodyTo (retWriter);
 				replyMsg.Signature = outSig;
+				conn.Send (replyMsg);
 			} else {
-				// BusException allows precisely formatted Error messages.
-				BusException busException = raisedException as BusException;
-				if (busException != null)
-					replyMsg = method_call.CreateError (busException.ErrorName, busException.ErrorMessage);
-				else if (raisedException is ArgumentException && raisedException.TargetSite.Name == mi.Name) {
-					// Name match trick above is a hack since we don't have the resolved MethodInfo.
-					ArgumentException argException = (ArgumentException)raisedException;
-					using (System.IO.StringReader sr = new System.IO.StringReader (argException.Message)) {
-						replyMsg = method_call.CreateError ("org.freedesktop.DBus.Error.InvalidArgs", sr.ReadLine ());
-					}
-				} else
-					replyMsg = method_call.CreateError (Mapper.GetInterfaceName (raisedException.GetType ()), raisedException.Message);
+				IssueErrorReply (method_call, raisedException, mi);
 			}
+		}
+
+		private void IssueErrorReply (MessageContainer method_call, Exception raisedException, MethodInfo mi = null)
+		{
+			Message replyMsg;
+
+			// BusException allows precisely formatted Error messages.
+			BusException busException = raisedException as BusException;
+			if (busException != null)
+				replyMsg = method_call.CreateError (busException.ErrorName, busException.ErrorMessage);
+			else if (raisedException is ArgumentException && mi != null && mi != null && raisedException.TargetSite.Name == mi.Name) {
+				// Name match trick above is a hack since we don't have the resolved MethodInfo.
+				ArgumentException argException = (ArgumentException)raisedException;
+				using (System.IO.StringReader sr = new System.IO.StringReader (argException.Message)) {
+					replyMsg = method_call.CreateError ("org.freedesktop.DBus.Error.InvalidArgs", sr.ReadLine ());
+				}
+			} else
+				replyMsg = method_call.CreateError (Mapper.GetInterfaceName (raisedException.GetType ()), raisedException.Message);
 
 			conn.Send (replyMsg);
 		}
@@ -261,6 +276,8 @@ namespace DBus
 
 				Exception ex = null;
 				try {
+					if (call == null)
+						throw new BusException ("org.freedesktop.DBus.Error.InvalidArgs", "No such interface");
 					call (Object, msgReader, msg, retWriter);
 				} catch (Exception e) { ex = e; }
 
