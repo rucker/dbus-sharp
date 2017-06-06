@@ -110,7 +110,7 @@ public class ManagedDBusTest
 		try { obj2.GetFDList (true); } catch {}
 		try { obj2.GetFDListVariant (true); } catch {}
 
-		var fd_ = Syscall.open ("/dev/null", OpenFlags.O_RDWR, 0);
+		var fd_ = Syscall.open ("/dev/zero", OpenFlags.O_RDWR, 0);
 		if (fd_ < 0)
 			UnixMarshal.ThrowExceptionForLastError ();
 		using (var fd = new UnixFD (fd_)) {

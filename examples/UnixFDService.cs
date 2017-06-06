@@ -8,8 +8,9 @@ make && ( cd examples && mcs -g UnixFDService.cs UnixFDInterface.cs -r ../src/db
 make && ( cd examples && mcs -g UnixFDClient.cs UnixFDInterface.cs -r ../src/dbus-sharp.dll -r Mono.Posix ) && MONO_PATH=src $HOME/mono-master/bin/mono --debug examples/UnixFDClient.exe
 
 python3
-import dbus; dbus.SessionBus().get_object('mono_dbus_sharp_test.UnixFDService', '/mono_dbus_sharp_test/UnixFDService').GetBytes(3)
-import dbus; f = dbus.SessionBus().get_object('mono_dbus_sharp_test.UnixFDService', '/mono_dbus_sharp_test/UnixFDService').GetFD ()
+import dbus; o=dbus.Interface(dbus.SessionBus().get_object('mono_dbus_sharp_test.UnixFDService', '/mono_dbus_sharp_test/UnixFDService'), 'mono_dbus_sharp_test.UnixFDService')
+o.GetBytes(3)
+o.GetFD(False)
 */
 
 using System;
