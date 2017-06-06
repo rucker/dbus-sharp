@@ -54,7 +54,7 @@ namespace DBus.Transports
 			cmsg cm = new cmsg ();
 			msg.msg_control = (IntPtr)(&cm);
 			msg.msg_controllen = (uint)sizeof (cmsg);
-			cm.hdr.cmsg_len = (uint)sizeof (cmsg);
+			cm.hdr.cmsg_len = (UIntPtr)sizeof (cmsg);
 			cm.hdr.cmsg_level = 0xffff; //SOL_SOCKET
 			cm.hdr.cmsg_type = 0x03; //SCM_CREDS
 
@@ -95,7 +95,7 @@ namespace DBus.Transports
 
 	struct cmsghdr
 	{
-		public uint cmsg_len; //data byte count, including header
+		public UIntPtr cmsg_len; //data byte count, including header
 		public int cmsg_level; //originating protocol
 		public int cmsg_type; //protocol-specific type
 	}

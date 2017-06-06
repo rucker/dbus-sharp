@@ -369,7 +369,7 @@ namespace DBus
 			if (method_call.Interface == "org.freedesktop.DBus.Peer") {
 				switch (method_call.Member) {
 					case "Ping":
-						Send (MessageHelper.ConstructReply (method_call));
+                                          Send (MessageHelper.ConstructReply (method_call, new object[]{}));
 						return;
 					case "GetMachineId":
 						if (MachineId != UUID.Zero) {
