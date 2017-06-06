@@ -205,14 +205,17 @@ namespace DBus
 			MessageReader msgReader = new MessageReader (msg);
 			MessageWriter retWriter = new MessageWriter ();
 
+			using (var disposableList = new DisposableList ()) {
+
 			Exception raisedException = null;
 			try {
-				mCaller.Call (Object, msgReader, msg, retWriter);
+				mCaller.Call (Object, msgReader, msg, retWriter, disposableList);
 			} catch (Exception e) {
 				raisedException = e;
 			}
 
 			IssueReply (method_call, outSig, retWriter, mCaller.MetaData, raisedException);
+                        }
 		}
 
 		private void IssueReply (MessageContainer method_call, Signature outSig, MessageWriter retWriter, MethodInfo mi, Exception raisedException)
@@ -278,7 +281,7 @@ namespace DBus
 				try {
 					if (call == null)
 						throw new BusException ("org.freedesktop.DBus.Error.InvalidArgs", "No such interface");
-					call (Object, msgReader, msg, retWriter);
+					call (Object, msgReader, msg, retWriter, null);
 				} catch (Exception e) { ex = e; }
 
 				IssueReply (method_call, asv, retWriter, null, ex);
@@ -318,7 +321,7 @@ namespace DBus
 
 			Exception raised = null;
 			try {
-				pc (Object, msgReader, msg, retWriter);
+				pc (Object, msgReader, msg, retWriter, null);
 			} catch (Exception e) {
 				raised = e;
 			}
