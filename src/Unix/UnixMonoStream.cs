@@ -2,6 +2,8 @@
 // This software is made available under the MIT License
 // See COPYING for details
 
+#if MONO_46
+
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -228,6 +230,8 @@ namespace DBus.Unix
 		}
 	}
 }
+
+#endif
 
 // vim: noexpandtab
 // Local Variables:

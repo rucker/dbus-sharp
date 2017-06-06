@@ -2,6 +2,8 @@
 // This software is made available under the MIT License
 // See COPYING for details
 
+#if MONO_46
+
 using System;
 using System.IO;
 using System.Text;
@@ -164,6 +166,8 @@ namespace DBus.Transports
 		}
 	}
 }
+
+#endif
 
 // vim: noexpandtab
 // Local Variables:

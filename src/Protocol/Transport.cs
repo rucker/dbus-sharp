@@ -41,13 +41,17 @@ namespace DBus.Transports
 				{
 					if (OSHelpers.PlatformIsUnixoid) {
 						Transport transport;
+#if MONO_46
 						if (UnixSendmsgTransport.Available ()) {
 							transport = new UnixSendmsgTransport ();
 						} else {
 							if (ProtocolInformation.Verbose)
 								Console.Error.WriteLine ("Warning: Syscall.sendmsg() not available, transfering unix FDs will not work");
+#endif
 							transport = new UnixNativeTransport ();
+#if MONO_46
 						}
+#endif
 						transport.Open (entry);
 						return transport;
 					}
