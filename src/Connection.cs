@@ -391,6 +391,8 @@ namespace DBus
 				//this is messy and inefficient
 				List<string> linkNodes = new List<string> ();
 				int depth = method_call.Path.Decomposed.Length;
+				//foreach (ObjectPath pth in new List<DBus.ObjectPath> (registeredObjects.Keys)) {
+                                lock (registeredObjects)
 				foreach (ObjectPath pth in registeredObjects.Keys) {
 					if (pth.Value == (method_call.Path.Value)) {
 						ExportObject exo = (ExportObject)registeredObjects[pth];
@@ -416,7 +418,10 @@ namespace DBus
 			}
 
 			BusObject bo;
-			if (registeredObjects.TryGetValue (method_call.Path, out bo)) {
+                        bool res;
+                        lock (registeredObjects)
+                          res = registeredObjects.TryGetValue (method_call.Path, out bo);
+			if (res) {
 				ExportObject eo = (ExportObject)bo;
 				eo.HandleMethodCall (method_call);
 			} else {
@@ -456,22 +461,25 @@ namespace DBus
 			eo.Registered = true;
 
 			//TODO: implement some kind of tree data structure or internal object hierarchy. right now we are ignoring the name and putting all object paths in one namespace, which is bad
-			registeredObjects[path] = eo;
+                        lock (registeredObjects)
+                          registeredObjects[path] = eo;
 		}
 
 		public object Unregister (ObjectPath path)
 		{
 			BusObject bo;
 
-			if (!registeredObjects.TryGetValue (path, out bo))
-				throw new Exception ("Cannot unregister " + path + " as it isn't registered");
+                        lock (registeredObjects) {
+                          if (!registeredObjects.TryGetValue (path, out bo))
+                            throw new Exception ("Cannot unregister " + path + " as it isn't registered");
 
-			registeredObjects.Remove (path);
+                          registeredObjects.Remove (path);
 
-			ExportObject eo = (ExportObject)bo;
-			eo.Registered = false;
+                          ExportObject eo = (ExportObject)bo;
+                          eo.Registered = false;
 
-			return eo.Object;
+                          return eo.Object;
+                        }
 		}
 
 		//these look out of place, but are useful
