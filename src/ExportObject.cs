@@ -250,7 +250,7 @@ namespace DBus
 			BusException busException = raisedException as BusException;
 			if (busException != null)
 				replyMsg = method_call.CreateError (busException.ErrorName, busException.ErrorMessage);
-			else if (raisedException is ArgumentException && mi != null && mi != null && raisedException.TargetSite.Name == mi.Name) {
+			else if (raisedException is ArgumentException && mi != null && mi != null && raisedException.TargetSite != null && raisedException.TargetSite.Name == mi.Name) {
 				// Name match trick above is a hack since we don't have the resolved MethodInfo.
 				ArgumentException argException = (ArgumentException)raisedException;
 				using (System.IO.StringReader sr = new System.IO.StringReader (argException.Message)) {
