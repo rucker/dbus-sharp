@@ -223,6 +223,8 @@ namespace DBus.Protocol
 				Write (val);
 			} else if (type == typeof (string)) {
 				Write ((string)val);
+			} else if (type == typeof (UnixFD)) {
+				Write ((UnixFD)val);
 			} else if (type.IsGenericType && (type.GetGenericTypeDefinition () == typeof (IDictionary<,>) || type.GetGenericTypeDefinition () == typeof (Dictionary<,>))) {
 				Type[] genArgs = type.GetGenericArguments ();
 				MethodInfo mi = dictWriter.MakeGenericMethod (genArgs);
