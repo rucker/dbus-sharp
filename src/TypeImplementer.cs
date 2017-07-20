@@ -564,7 +564,8 @@ namespace DBus
 				typeof (object),
 				typeof (MessageReader),
 				typeof (Message),
-				typeof (MessageWriter)
+				typeof (MessageWriter),
+				typeof (DisposableList) // TODO: How to deal with UnixFD properties?
 			};
 			var method = new DynamicMethod ("PropertyGet", typeof(void), parms, typeof(MessageReader));
 
@@ -597,7 +598,8 @@ namespace DBus
 				typeof (object),
 				typeof (MessageReader),
 				typeof (Message),
-				typeof (MessageWriter)
+				typeof (MessageWriter),
+				typeof (DisposableList) // TODO: How to deal with UnixFD properties?
 			};
 			var method = new DynamicMethod ("PropertySet", typeof(void), parms, typeof(MessageReader));
 
@@ -643,7 +645,8 @@ namespace DBus
 				typeof (object),
 				typeof (MessageReader),
 				typeof (Message),
-				typeof (MessageWriter)
+				typeof (MessageWriter),
+				typeof (DisposableList) // TODO: How to deal with UnixFD properties?
 			};
 			var method = new DynamicMethod ("PropertyGetAll", typeof(void), parms, typeof(MessageReader));
 
