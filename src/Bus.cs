@@ -79,6 +79,12 @@ namespace DBus
 			Register ();
 		}
 
+		public Bus (System.IO.Stream stream, string authString) : base (stream, authString)
+		{
+			this.bus = GetObject<IBus> (DBusName, DBusPath);
+			Register ();
+		}
+
 		//should this be public?
 		//as long as Bus subclasses Connection, having a Register with a completely different meaning is bad
 		void Register ()

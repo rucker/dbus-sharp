@@ -59,6 +59,30 @@ namespace DBus
 			Authenticate ();
 		}
 
+		class StreamTransport : DBus.Transports.Transport {
+			string authString;
+			public StreamTransport (System.IO.Stream stream, string authString) {
+				Stream = stream;
+				this.authString = authString;
+			}
+
+			public override void Open (AddressEntry entry) {
+			}
+
+			public override void WriteCred () {
+				Stream.WriteByte (0);
+			}
+
+			public override string AuthString () {
+				return authString;
+			}
+		}
+		
+		public Connection (System.IO.Stream stream, string authString) : this (new StreamTransport (stream, authString))
+		{
+			Authenticate ();
+		}
+
 		public bool IsConnected {
 			get {
 				return isConnected;
