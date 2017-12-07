@@ -15,43 +15,47 @@ namespace DBus
 
 		static Dictionary<string,Bus> buses = new Dictionary<string,Bus> ();
 
-		static Bus starterBus = null;
-
-		static Bus systemBus  = Address.StarterBusType=="system"  ? Starter : (Address.System !=null ? Bus.Open (Address.System ) : null);
-		static Bus sessionBus = Address.StarterBusType=="session" ? Starter : (Address.Session != null ? Bus.Open (Address.Session) : null);
-
-		IBus bus;
-		string address;
-		string uniqueName;
+		class StarterBusValue {
+			internal static Bus bus;
+			static StarterBusValue () {
+				bus = Bus.Open (Address.Starter);
+			}
+		}
+		class SystemBusValue {
+			internal static Bus bus;
+			static SystemBusValue () {
+				bus = Address.StarterBusType == "system" ? Starter : (Address.System != null ? Bus.Open (Address.System) : null);
+			}
+		}
+		class SessionBusValue {
+			internal static Bus bus;
+			static SessionBusValue () {
+				bus = Address.StarterBusType == "session" ? Starter : (Address.Session != null ? Bus.Open (Address.Session) : null);
+			}
+		}
 
 		public static Bus System
 		{
 			get {
-				return systemBus;
+				return SystemBusValue.bus;
 			}
 		}
-
 		public static Bus Session
 		{
 			get {
-				return sessionBus;
+				return SessionBusValue.bus;
 			}
 		}
-
 		public static Bus Starter
 		{
 			get {
-				if (starterBus == null) {
-					try {
-						starterBus = Bus.Open (Address.Starter);
-					} catch (Exception e) {
-						throw new Exception ("Unable to open the starter message bus.", e);
-					}
-				}
-
-				return starterBus;
+				return StarterBusValue.bus;
 			}
 		}
+
+		IBus bus;
+		string address;
+		string uniqueName;
 
 		public static new Bus Open (string address)
 		{
@@ -163,3 +167,9 @@ namespace DBus
 		}
 	}
 }
+
+// Local Variables:
+// tab-width: 4
+// c-basic-offset: 4
+// indent-tabs-mode: t
+// End:
