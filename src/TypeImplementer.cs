@@ -285,7 +285,8 @@ namespace DBus
 					ilg.Emit (OpCodes.Box, source.GetParameters ()[0].ParameterType);
 				}
 
-				ilg.Emit (OpCodes.Tailcall);
+				if (!isGet) // Get operations cannot be tailcall because there is an opcode (unbox_any or castclass) between the call/callvirt and the ret
+                                  ilg.Emit (OpCodes.Tailcall);
 				ilg.Emit (target.IsFinal ? OpCodes.Call : OpCodes.Callvirt, target);
 
 				if (isGet)
