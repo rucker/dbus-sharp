@@ -182,6 +182,8 @@ namespace DBus
 			writer.Write (property);
 
 			MessageReader reader = SendMethodCall ("org.freedesktop.DBus.Properties", "Get", "ss", writer, typeof(object), out exception);
+			if (exception != null)
+				throw exception;
 
 			return reader.ReadValues ().FirstOrDefault ();
 		}
@@ -195,6 +197,8 @@ namespace DBus
 			writer.Write (typeof(object), value);
 
 			SendMethodCall ("org.freedesktop.DBus.Properties", "Set", "ssv", writer, typeof(void), out exception);
+			if (exception != null)
+				throw exception;
 		}
 
 		public void Invoke (MethodBase methodBase, string methodName, object[] inArgs, out object[] outArgs, out object retVal, out Exception exception)
