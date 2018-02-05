@@ -580,7 +580,10 @@ namespace DBus
 
 			ilg.Emit (OpCodes.Ldarg_3);
 			ilg.Emit (OpCodes.Ldloc, retLocal);
-			GenWriter (ilg, mi.ReturnType);
+			//GenWriter (ilg, mi.ReturnType); // This would send the value directly, not as a variant
+			if (mi.ReturnType.IsValueType)
+				ilg.Emit (OpCodes.Box, mi.ReturnType);
+			GenWriter (ilg, typeof (object)); // TODO: Handle nested variants?
 
 			ilg.Emit (OpCodes.Ret);
 

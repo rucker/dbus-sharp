@@ -308,7 +308,7 @@ namespace DBus
 			case "Get":
 				mi = pcs.MetaData.GetGetMethod ();
 				pc = pcs.Get;
-				outSig = Signature.GetSig(mi.ReturnType);
+				outSig = Signature.GetSig(typeof (object));
 				break;
 			default:
 				throw new ArgumentException (string.Format ("No such method {0}.{1}", method_call.Interface, method_call.Member));

@@ -185,7 +185,7 @@ namespace DBus
 			if (exception != null)
 				throw exception;
 
-			return reader.ReadValues ().FirstOrDefault ();
+			return reader.ReadValue (typeof (object));
 		}
 
 		public void SendPropertySet (string iface, string property, object value)
