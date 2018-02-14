@@ -340,13 +340,22 @@ namespace DBus
 			var signal = MessageContainer.FromMessage (msg);
 
 			//TODO: this is a hack, not necessary when MatchRule is complete
-			MatchRule rule = new MatchRule ();
-			rule.MessageType = MessageType.Signal;
-			rule.Fields.Add (FieldCode.Interface, new MatchTest (signal.Interface));
-			rule.Fields.Add (FieldCode.Member, new MatchTest (signal.Member));
-			//rule.Fields.Add (FieldCode.Sender, new MatchTest (signal.Sender));
-			rule.Fields.Add (FieldCode.Path, new MatchTest (signal.Path));
+			MatchRule[] rules = new MatchRule[2];
+			rules[0] = new MatchRule ();
+			rules[0].MessageType = MessageType.Signal;
+			rules[0].Fields.Add (FieldCode.Interface, new MatchTest (signal.Interface));
+			rules[0].Fields.Add (FieldCode.Member, new MatchTest (signal.Member));
+			//rules[0].Fields.Add (FieldCode.Sender, new MatchTest (signal.Sender));
+			rules[0].Fields.Add (FieldCode.Path, new MatchTest (signal.Path));
+			rules[1] = new MatchRule ();
+			rules[1].MessageType = MessageType.Signal;
+			rules[1].Fields.Add (FieldCode.Interface, new MatchTest (signal.Interface));
+			rules[1].Fields.Add (FieldCode.Member, new MatchTest (signal.Member));
+			rules[1].Fields.Add (FieldCode.Sender, new MatchTest (signal.Sender));
+			rules[1].Fields.Add (FieldCode.Path, new MatchTest (signal.Path));
 
+                        bool handlerFound = false;
+                        foreach (var rule in rules) {
 			Delegate dlg;
 			if (Handlers.TryGetValue (rule, out dlg) && dlg != null) {
 				MethodInfo mi = dlg.GetType ().GetMethod ("Invoke");
@@ -367,7 +376,10 @@ namespace DBus
 
 				//signals have no return value
 				dlg.DynamicInvoke (MessageHelper.GetDynamicValues (msg, mi.GetParameters ()));
-			} else {
+				handlerFound = true;
+			}
+                        }
+			if (!handlerFound) {
 				//TODO: how should we handle this condition? sending an Error may not be appropriate in this case
 				if (ProtocolInformation.Verbose)
 					Console.Error.WriteLine ("Warning: No signal handler for " + signal.Member);

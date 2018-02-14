@@ -62,7 +62,11 @@ namespace DBus
 			// FIXME: Cause a regression compared to 0.6 as name wasn't matched before
 			// the problem arises because busname is not used by DBus daemon and
 			// instead it uses the canonical name of the sender (i.e. similar to ':1.13')
-			// rule.Fields.Add (FieldCode.Sender, new MatchTest (bus_name));
+			if (bus_name.StartsWith (":")) {
+				rule.Fields.Add (FieldCode.Sender, new MatchTest (bus_name));
+			} else {
+				Console.Error.WriteLine ("Warning: Registering handler for signal on object without unique name ({0}), this will receive signals from all senders", bus_name);
+			}
 
 			if (adding) {
 				if (conn.Handlers.ContainsKey (rule))
