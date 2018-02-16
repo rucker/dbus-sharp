@@ -52,6 +52,11 @@ namespace DBus
 			}
 		}
 
+		public bool IsUniqueName (string name)
+		{
+			return name.StartsWith (":") || name == "org.freedesktop.DBus";
+		}
+
 		public void ToggleSignal (string iface, string member, Delegate dlg, bool adding)
 		{
 			MatchRule rule = new MatchRule ();
@@ -62,7 +67,7 @@ namespace DBus
 			// FIXME: Cause a regression compared to 0.6 as name wasn't matched before
 			// the problem arises because busname is not used by DBus daemon and
 			// instead it uses the canonical name of the sender (i.e. similar to ':1.13')
-			if (bus_name.StartsWith (":")) {
+			if (IsUniqueName (bus_name)) {
 				rule.Fields.Add (FieldCode.Sender, new MatchTest (bus_name));
 			} else {
 				Console.Error.WriteLine ("Warning: Registering handler for signal on object without unique name ({0}), this will receive signals from all senders", bus_name);
