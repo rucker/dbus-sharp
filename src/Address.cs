@@ -75,6 +75,11 @@ namespace DBus
 						result = "autolaunch:";
 				}
 
+				// On MacOS get the session bus address from launchd
+				if (string.IsNullOrEmpty (result) && OSHelpers.PlatformIsMacOS) {
+					result = "launchd:env=DBUS_LAUNCHD_SESSION_BUS_SOCKET";
+				}
+
 				return result;
 			}
 		}

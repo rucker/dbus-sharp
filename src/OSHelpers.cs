@@ -27,6 +27,23 @@ namespace DBus
 			}
 		}
 
+		public static bool PlatformIsMacOS
+		{
+			get {
+				switch (platformid) {
+					case PlatformID.MacOSX:
+						return true;
+					case PlatformID.Unix:
+						Mono.Unix.Native.Utsname buf;
+						if (Mono.Unix.Native.Syscall.uname (out buf) == -1)
+							Mono.Unix.UnixMarshal.ThrowExceptionForLastError ();
+						return buf.sysname == "Darwin";
+					default:
+						return false;
+				}
+			}
+		}
+
 		// Reads a string from shared memory with the ID "id".
 		// Optionally, a maximum length can be specified. A negative number means "no limit".
 		public static string ReadSharedMemoryString (string id, long maxlen = -1)

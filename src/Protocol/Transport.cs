@@ -67,6 +67,26 @@ namespace DBus.Transports
 				}
 #endif
 
+				case "launchd":
+				{
+					string env = entry.Properties["env"];
+					var psi = new ProcessStartInfo ();
+					psi.FileName = "launchctl";
+					psi.Arguments = "getenv '" + env.Replace ("'", "'\\''") + "'";
+					psi.UseShellExecute = false;
+					psi.RedirectStandardOutput = true;
+					var process = Process.Start (psi);
+					var output = process.StandardOutput.ReadToEnd ();
+					process.WaitForExit ();
+					if (process.ExitCode != 0)
+						throw new Exception ("Calling " + psi.FileName + " " + psi.Arguments + " failed with error code " + process.ExitCode);
+					var path = output.Trim ();
+					var entry2 = new AddressEntry ();
+					entry2.Method = "unix";
+					entry2.Properties["path"] = path;
+					return Create (entry2);
+				}
+
 				// "autolaunch:" means: the first client user of the dbus library shall spawn the daemon on itself, see dbus 1.7.8 from http://dbus.freedesktop.org/releases/dbus/
 				case "autolaunch":
 				{
