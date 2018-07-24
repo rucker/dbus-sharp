@@ -242,8 +242,13 @@ namespace DBus
 			}
 		}
 
+		static bool PrintExceptions = !string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("DBUS_SHARP_PRINT_EXCEPTIONS"));
+
 		private void IssueErrorReply (MessageContainer method_call, Exception raisedException, MethodInfo mi = null)
 		{
+			if (PrintExceptions)
+				Console.Error.WriteLine ("Got exception for exported object: {0}", raisedException);
+
 			Message replyMsg;
 
 			// BusException allows precisely formatted Error messages.
