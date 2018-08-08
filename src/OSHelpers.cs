@@ -33,11 +33,13 @@ namespace DBus
 				switch (platformid) {
 					case PlatformID.MacOSX:
 						return true;
+#if !UNITY_STANDALONE_OSX
 					case PlatformID.Unix:
 						Mono.Unix.Native.Utsname buf;
 						if (Mono.Unix.Native.Syscall.uname (out buf) == -1)
 							Mono.Unix.UnixMarshal.ThrowExceptionForLastError ();
 						return buf.sysname == "Darwin";
+#endif
 					default:
 						return false;
 				}

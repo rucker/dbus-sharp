@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading;
 
 using DBus.Transports;
+using DBus.Protocol;
 using org.freedesktop.DBus;
 
 namespace DBus
@@ -232,13 +233,15 @@ namespace DBus
 		{
 			// Name* signals on org.freedesktop.DBus are connection-specific.
 			// We handle them here as a special case.
-
+/*
+  This code is apparently not used.  The Signal class cannot be found.
 			Signal nameSignal = new Signal (Path, DBusInterface, "Name" + memberSuffix);
 			MessageWriter mw = new MessageWriter ();
 			mw.Write (name);
 			nameSignal.message.Body = mw.ToArray ();
 			nameSignal.message.Signature = Signature.StringSig;
 			Caller.Send (nameSignal.message);
+*/
 		}
 
 		public string[] ListNames ()
@@ -708,7 +711,7 @@ namespace DBus
 			: base (ServerBus.DBusInterface + ".Error." + errorNameSuffix, format, args)
 		{
 			// Note: This won't log ArgumentExceptions which are used in some places.
-			if (Protocol.Verbose)
+			if (ProtocolInformation.Verbose)
 				Console.Error.WriteLine (Message);
 		}
 	}

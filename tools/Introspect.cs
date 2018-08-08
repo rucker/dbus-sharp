@@ -8,7 +8,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using DBus;
-using Schemas;
+// using Schemas;
 
 public class test
 {

@@ -64,9 +64,13 @@ namespace DBus.Transports
 
 		public override string AuthString ()
 		{
+#if UNITY_STANDALONE_OSX
+			return "unknown";
+#else
 			return OSHelpers.PlatformIsUnixoid ?
 				Mono.Unix.Native.Syscall.geteuid ().ToString ()                       // Unix User ID
 				: System.Security.Principal.WindowsIdentity.GetCurrent ().User.Value; // Windows User ID
+#endif
 		}
 	}
 }

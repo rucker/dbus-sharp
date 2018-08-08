@@ -17,6 +17,7 @@ namespace DBus
 	using Unix;
 	using Transports;
 	using Authentication;
+	using Protocol;
 
 	//TODO: complete this class
 	abstract class Server
@@ -39,7 +40,7 @@ namespace DBus
 #endif
 					}
 				} catch (Exception e) {
-					if (Protocol.Verbose)
+					if (ProtocolInformation.Verbose)
 						Console.Error.WriteLine (e.Message);
 				}
 			}

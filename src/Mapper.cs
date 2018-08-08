@@ -254,7 +254,7 @@ namespace DBus
 		{
 			//TODO: this validation check should provide better information, eg. message dump or a stack trace, or at least the interface/member
 			/*
-			if (Protocol.Verbose) {
+			if (ProtocolInformation.Verbose) {
 				Signature expected = Signature.GetSig (types);
 				Signature actual = msg.Signature;
 				if (actual != expected)
