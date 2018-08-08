@@ -1,0 +1,8 @@
+{
+    "name": "dbus-sharp",
+    "references": [],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}

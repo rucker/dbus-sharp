@@ -1,0 +1,12 @@
+{
+    "name": "dbus-sharp-tests",
+    "references": [
+        "dbus-sharp"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}
