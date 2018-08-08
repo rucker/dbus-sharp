@@ -24,3 +24,4 @@ tests/TestResult.xml
 tests/dbus-sharp.dll.config
 xdb.il
 xdb.s
+*.meta
